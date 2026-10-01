@@ -1,0 +1,16 @@
+{
+  "format": { "enabled": false },
+  "autofix": { "enabled": false },
+  "actionableWarnings": {
+    "enabled": false,
+    "includeLspCodeActions": false,
+    "deltaOnly": true,
+    "autoFix": { "enabled": false, "maxFixes": 0 }
+  },
+  "readGuard": { "enabled": true },
+  "tests": { "enabled": false },
+  "opengrep": { "enabled": false },
+  "guard": { "enabled": false },
+  "contextInjection": { "enabled": true },
+  "tools": { "lazy": true }
+}

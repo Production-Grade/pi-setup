@@ -1,0 +1,70 @@
+FROM node:24-bookworm-slim
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends bash ca-certificates fd-find git ripgrep python3 socat \
+  && ln -s /usr/bin/fdfind /usr/local/bin/fd \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN git config --system user.name "Pi Worktree Bot" \
+  && git config --system user.email "pi-worktree@local.invalid"
+
+RUN npm install -g --ignore-scripts \
+  @earendil-works/pi-coding-agent@0.84.4 \
+  pyright@1.1.413
+
+ENV PI_CODING_AGENT_DIR=/opt/pi-home
+ENV PI_TELEMETRY=0
+ENV PI_SKIP_VERSION_CHECK=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PI_LENS_DISABLE_LSP_INSTALL=1
+ENV PI_LENS_DISABLE_TOOL_INSTALL=1
+
+RUN mkdir -p \
+  /opt/pi-home/agents \
+  /opt/pi-home/extensions/pi-permission-system \
+  /opt/pi-home/prompts \
+  /opt/pi-state/sessions \
+  /home/node/.pi-lens
+RUN pi install npm:@gotgenes/pi-permission-system@29.0.0 \
+  && pi install npm:@narumitw/pi-plan-mode@0.56.0 \
+  && pi install npm:@recynie/pi-goal@0.2.1 \
+  && pi install npm:pi-lens@4.1.3 \
+  && pi install npm:@gotgenes/pi-subagents@21.0.3 \
+  && pi install npm:@gotgenes/pi-subagents-worktrees@0.3.1 \
+  && pi install npm:pi-diff-review@0.1.26 \
+  && pi install npm:pi-continue@0.9.3 \
+  && pi install npm:pi-playwright@0.1.2
+# pi-playwright drives a real Chromium through Microsoft's @playwright/cli. The browser is installed at
+# build time; the running container still only reaches the model route.
+ENV PLAYWRIGHT_BROWSERS_PATH=/opt/ms-playwright
+# Keep the skill's snapshots, screenshots and videos inside the project, not /tmp, so the permission
+# policy's working-directory boundary does not need opening for them.
+ENV PI_PLAYWRIGHT_ARTIFACTS=.playwright-artifacts
+RUN node /opt/pi-home/npm/node_modules/playwright/cli.js install --with-deps chromium \
+  && chmod -R a+rX /opt/ms-playwright
+RUN ln -s /usr/local/lib/node_modules/@earendil-works /opt/pi-home/npm/node_modules/@earendil-works
+
+COPY settings.json /opt/pi-home/settings.json
+COPY models.json /opt/pi-home/models.json
+COPY AGENTS.md /opt/pi-home/AGENTS.md
+COPY pi-continue.json /opt/pi-home/extensions/pi-continue.json
+COPY permission-system.json /opt/pi-home/extensions/pi-permission-system/config.json
+COPY plan-mode.json /opt/pi-home/pi-plan-mode.json
+COPY subagents.json /opt/pi-home/subagents.json
+COPY subagents-worktrees.json /opt/pi-home/subagents-worktrees.json
+COPY agents /opt/pi-home/agents
+COPY prompts /opt/pi-home/prompts
+COPY pi-lens.json /home/node/.pi-lens/config.json
+COPY entrypoint.sh /usr/local/bin/pg-pi-entrypoint
+
+RUN chmod 0755 /usr/local/bin/pg-pi-entrypoint \
+  && ln -s /opt/pi-state/sessions /opt/pi-home/sessions \
+  && chown -R node:node /opt/pi-home /opt/pi-state /home/node/.pi-lens \
+  && chown -R root:root /opt/pi-home/npm/node_modules/pi-playwright \
+  && chmod -R a+rX /opt/pi-home/npm/node_modules/pi-playwright
+# The permission policy lets the model read and run pi-playwright's own skill files; root ownership
+# means it still cannot change them.
+
+WORKDIR /workspace
+USER node
+ENTRYPOINT ["/usr/local/bin/pg-pi-entrypoint"]

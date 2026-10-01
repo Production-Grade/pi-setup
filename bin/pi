@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+image_name="${PG_PI_IMAGE:-productiongrade-pi:0.84.4}"
+state_volume="${PG_PI_STATE_VOLUME:-productiongrade-pi-state}"
+provider="${PG_PI_PROVIDER:-zai}"
+model="${PG_PI_MODEL:-glm-5.3}"
+thinking="${PG_PI_THINKING:-medium}"
+
+if ! command -v docker >/dev/null 2>&1; then
+  printf '%s\n' "Docker is required to run the Production Grade Pi image." >&2
+  exit 1
+fi
+
+case "$provider" in
+  zai)
+    network_name="bridge"
+    credential_args=(-e ZAI_API_KEY)
+    ;;
+  ollama-local|ds4)
+    network_name="pg-pi-models"
+    credential_args=()
+    ;;
+  *)
+    printf '%s\n' "Unsupported PG_PI_PROVIDER: $provider" >&2
+    exit 2
+    ;;
+esac
+
+terminal_args=(-i)
+if [[ -t 0 && -t 1 ]]; then
+  terminal_args+=(-t)
+fi
+
+exec docker run --rm "${terminal_args[@]}" \
+  --network "$network_name" \
+  --mount "type=bind,source=$PWD,target=/workspace" \
+  --mount "type=volume,source=$state_volume,target=/opt/pi-state" \
+  "${credential_args[@]}" \
+  "$image_name" \
+  --provider "$provider" \
+  --model "$model" \
+  --thinking "$thinking" \
+  "$@"

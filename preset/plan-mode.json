@@ -1,0 +1,8 @@
+{
+  "thinkingLevel": "inherit",
+  "defaultPlanTools": ["read", "bash", "grep", "find", "ls", "subagent"],
+  "allowedPlanSubagents": ["scout"],
+  "safeSubcommands": {
+    "git": ["status", "log", "rev-parse", "blame", "show", "diff"]
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "providers": {
+    "zai": {
+      "name": "Z.AI Coding Plan",
+      "baseUrl": "https://api.z.ai/api/coding/paas/v4",
+      "apiKey": "$ZAI_API_KEY",
+      "api": "openai-completions",
+      "compat": {
+        "supportsStore": false,
+        "supportsDeveloperRole": false,
+        "supportsReasoningEffort": true,
+        "thinkingFormat": "zai",
+        "zaiToolStream": true
+      },
+      "models": [
+        {
+          "id": "glm-5.3",
+          "name": "GLM-5.3 via Z.AI Coding Plan",
+          "reasoning": true,
+          "thinkingLevelMap": {
+            "minimal": null,
+            "low": "high",
+            "medium": "high",
+            "high": "high",
+            "xhigh": null,
+            "max": "max"
+          },
+          "contextWindow": 204800,
+          "maxTokens": 32768,
+          "cost": {"input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0}
+        }
+      ]
+    },
+    "ds4": {
+      "name": "Local DeepSeek V4 Flash via DwarfStar",
+      "baseUrl": "http://model-proxy:8000/v1",
+      "apiKey": "local-placeholder",
+      "api": "openai-completions",
+      "compat": {
+        "supportsStore": false,
+        "supportsDeveloperRole": false,
+        "supportsReasoningEffort": true,
+        "supportsUsageInStreaming": true,
+        "maxTokensField": "max_tokens",
+        "supportsStrictMode": false,
+        "thinkingFormat": "deepseek",
+        "requiresReasoningContentOnAssistantMessages": true
+      },
+      "models": [
+        {
+          "id": "deepseek-v4-flash",
+          "name": "DeepSeek V4 Flash local",
+          "reasoning": true,
+          "contextWindow": 32768,
+          "maxTokens": 8192,
+          "cost": {"input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0}
+        }
+      ]
+    },
+    "ollama-local": {
+      "name": "Local Ollama",
+      "baseUrl": "http://model-proxy:11434/v1",
+      "apiKey": "local-placeholder",
+      "api": "openai-completions",
+      "models": [
+        {
+          "id": "pg-qwen3.8-27b-16k:latest",
+          "name": "Qwen 3.8 27B MLX local (16K)",
+          "reasoning": true,
+          "contextWindow": 16384,
+          "maxTokens": 8192,
+          "cost": {"input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0}
+        },
+        {
+          "id": "pg-qwen3.8-27b-100k:latest",
+          "name": "Qwen 3.8 27B MLX local (100K)",
+          "reasoning": true,
+          "contextWindow": 102400,
+          "maxTokens": 8192,
+          "cost": {"input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0}
+        },
+        {
+          "id": "pg-qwen3.8-27b-128k:latest",
+          "name": "Qwen 3.8 27B MLX local (128K)",
+          "reasoning": true,
+          "contextWindow": 131072,
+          "maxTokens": 8192,
+          "cost": {"input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0}
+        },
+        {
+          "id": "pg-qwen3.8-27b-192k:latest",
+          "name": "Qwen 3.8 27B MLX local (192K)",
+          "reasoning": true,
+          "contextWindow": 196608,
+          "maxTokens": 8192,
+          "cost": {"input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0}
+        }
+      ]
+    }
+  }
+}

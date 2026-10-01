@@ -1,0 +1,27 @@
+{
+  "defaultProvider": "zai",
+  "defaultModel": "glm-5.3",
+  "enabledModels": [
+    "zai/*",
+    "ds4/*",
+    "ollama-local/*"
+  ],
+  "packages": [
+    "npm:@gotgenes/pi-permission-system@29.0.0",
+    "npm:@narumitw/pi-plan-mode@0.56.0",
+    "npm:@recynie/pi-goal@0.2.1",
+    "npm:pi-lens@4.1.3",
+    "npm:@gotgenes/pi-subagents@21.0.3",
+    "npm:@gotgenes/pi-subagents-worktrees@0.3.1",
+    "npm:pi-diff-review@0.1.26",
+    "npm:pi-continue@0.9.3",
+    "npm:pi-playwright@0.1.2"
+  ],
+  "prompts": [
+    "prompts"
+  ],
+  "defaultProjectTrust": "never",
+  "enableInstallTelemetry": false,
+  "enableSkillCommands": true,
+  "hideThinkingBlock": true
+}
